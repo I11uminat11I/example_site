@@ -9,7 +9,7 @@ def index(request):
     return HttpResponse('ssss')
 
 
-def show_posts(request):
+def index(request):
     posts = Post.objects.filter(is_visible=True)
     context = {'posts': posts}
-    return HttpResponse(render(request, 'blog/show_posts.html', context))
+    return HttpResponse(render(request, 'blog/index.html', context))
