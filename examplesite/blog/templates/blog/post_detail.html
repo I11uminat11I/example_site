@@ -2,9 +2,7 @@
 {% block title %}
 {{ title }}{{ block.super }}
 {% endblock %}
-
 {% block content %}
-{% for post in posts %}
 <div class="card m-3">
   <div class="card-header">
     category: <a href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
@@ -14,15 +12,12 @@
     {% if post.image %}
     <img src="{{ post.image.url }}" class="card-img-top" alt="..." width="400">
     {% endif %}
-    <p class="card-text">{{ post.content|safe|truncatewords:70 }}</p>
-    <a href="{{ post.get_absolute_url }}" class="btn btn-primary"
-       style="background-color:#a81113; border:#a81113">Read more</a>
+    <p class="card-text">{{ post.content|safe}}</p>
     <p class="card-text"><small class="text-muted">{{ post.views }} views</small></p>
   </div>
   <div class="card-footer text-muted">
     {{ post.created_at }}
   </div>
 </div>
-{% endfor %}
 {% endblock %}
 </html>

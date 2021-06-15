@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.db import models
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 
 class Category(models.Model):
@@ -13,7 +13,7 @@ class Category(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('category', kwargs={'slug': self.slug})
+        return reverse_lazy('category', kwargs={'slug': self.slug})
 
     class Meta:
         ordering = ['title']
@@ -42,6 +42,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     file = models.FileField(upload_to='uploads/%Y/%m/%d/', blank=True)
+    image = models.ImageField(upload_to='covers/%Y/%m/%d/', blank=True)
     views = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     is_visible = models.BooleanField(default=True)
