@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Post, Category
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
+from collections import OrderedDict
+from .forms import PostForm
 
 # Create your views here.
 
@@ -14,17 +16,48 @@ def index(request):
         context = {'posts': posts}
         return render(request, 'blog/index.html', context)
     posts = Post.objects.filter(is_visible=True)
-    context = {'posts': posts}
+#    context = {'posts': posts}
+    context = sort_categories()
+    context['posts'] = posts
     return render(request, 'blog/index.html', context)
 
 
 def open_post(request, slug):
-    post = get_object_or_404(Post, slug=slug)
-    return render(request, 'blog/post_detail.html', {'post': post})
+    context = sort_categories()
+    context['post'] = get_object_or_404(Post, slug=slug)
+    return render(request, 'blog/post_detail.html', context)
 
 
 def get_posts_by_category(request, slug):
-    posts = Post.objects.filter(category__slug=slug)
-    return render(request, 'blog/posts.html', {'posts': posts})
+    context = sort_categories()
+    context['posts'] = Post.objects.filter(Q(is_visible=True) and Q(category__slug=slug))
+    return render(request, 'blog/posts.html', context)
 
 
+def sort_categories():
+    posts = Post.objects.filter(is_visible=True)[:50]
+    container = {}
+    for post in posts:
+        try:
+            container[post.category] += post.views
+        except KeyError:
+            container[post.category] = post.views
+    categories = sorted(container.items(), key=lambda x: x[1], reverse=True)
+    if len(categories) > 3:
+        hype_categories = OrderedDict(categories[:3])
+        other_categories = OrderedDict(categories[3:])
+        context = {'hype_categories': hype_categories, 'other_categories': other_categories}
+        return context
+    context = {'hype_categories': OrderedDict(categories)}
+    return context
+
+
+def add_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save()
+            return redirect(post.get_absolute_url())
+    else:
+        form = PostForm()
+    return render(request, 'blog/add_post.html', {'form': form})

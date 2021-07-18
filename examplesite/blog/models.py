@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db import models
 from django.urls import reverse, reverse_lazy
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -47,6 +48,10 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     is_visible = models.BooleanField(default=True)
     category = models.ForeignKey(Category, models.PROTECT, related_name='posts')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title

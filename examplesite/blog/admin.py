@@ -1,28 +1,42 @@
+from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.contrib import admin
 
 # Register your models here.
 from django.utils.safestring import mark_safe
+from django import forms
 
 from .models import Post, Category, Tag
+
 image_type = ['jpg', 'png', 'gif']
 video_type = ['mp4', 'webm']
 audio_type = ['mp3']
 
 
+class PostAdminForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorUploadingWidget())
+
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+
 class PostAdmin(admin.ModelAdmin):
+    form = PostAdminForm
     prepopulated_fields = {"slug": ("title",)}
     model = Post
-    list_display = ['id', 'title', 'category', 'slug', 'is_visible', 'image', 'created_at']
+    list_display = ['id', 'title', 'category', 'slug', 'is_visible', 'get_image', 'created_at']
     list_display_links = ['id', 'title']
-    readonly_fields = ('views', 'created_at', 'get_media')
+    readonly_fields = ('views', 'created_at', 'get_image')
     search_fields = ['title']
     list_filter = ['category', 'tags', 'created_at']
-    fields = ('title', 'category', 'content', 'tags', 'slug', 'views', 'is_visible', 'file', 'image', 'created_at',)
+    fields = ('title', 'category', 'content', 'tags', 'slug', 'views', 'is_visible', 'image', 'get_image', 'file', 'created_at',)
     list_per_page = 5
     save_on_top = True
 
     def get_image(self, obj):
-        return mark_safe(f'<image src="{obj.image.url}" height=60px">')
+        if obj.image:
+            return mark_safe(f'<image src="{obj.image.url}" width=80px">')
 
     get_image.short_description = 'image'
 
