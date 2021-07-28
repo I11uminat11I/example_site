@@ -29,14 +29,23 @@
           </ul>
         </li>
         {% endif %}
+        {% if request.user.is_staff or request.user.is_superuser %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'add_post' %}">add post</a>
         </li>
+        {% endif %}
       </ul>
     </div>
     <form class="d-flex" action="{% url 'index' %}">
       <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
       <button class="btn btn-outline-warning" type="submit">Search</button>
     </form>
+    <div class="navbar-text mx-2 text-light">
+      {% if request.user.is_authenticated %}
+        {{ user.username }} | <a href="{% url 'logout' %}">sign out</a>
+      {% else %}
+        <a class="text-light" href="{% url 'register' %}">sign up</a> | <a href="{% url 'login' %}">sign in</a>
+      {% endif %}
+    </div>
   </div>
 </nav>

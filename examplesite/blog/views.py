@@ -1,10 +1,11 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Post, Category
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from collections import OrderedDict
-from .forms import PostForm
+from .forms import PostForm, UserRegisterForm, UserLoginForm
 
 # Create your views here.
 
@@ -59,5 +60,38 @@ def add_post(request):
             post = form.save()
             return redirect(post.get_absolute_url())
     else:
-        form = PostForm()
-    return render(request, 'blog/add_post.html', {'form': form})
+        if request.user.is_staff or request.user.is_superuser:
+            form = PostForm()
+            return render(request, 'blog/add_post.html', {'form': form})
+        return redirect('login')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password1']
+            form.save()
+            user = authenticate(request, username=username, password=password)
+            login(request, user)
+            return redirect('index')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'blog/register.html', {'form': form})
+
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect('index')
+    else:
+        form = UserLoginForm()
+    return render(request, 'blog/login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
