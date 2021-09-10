@@ -2,27 +2,191 @@
 {% block title %}
 {{ title }}{{ block.super }}
 {% endblock %}
-
+{% load tags %}
 {% block content %}
-{% for post in posts %}
-<div class="card my-4 shadow-sm">
-  <div class="card-header">
-    category: <a href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">{{ post.title }}</h5>
-    {% if post.image %}
-    <img src="{{ post.image.url }}" class="card-img-top rounded-3" alt="...">
-    {% endif %}
-    <p class="card-text mr-2 mt-2 md-2 pt-2 pd-2 pr-2">{{ post.content|safe|truncatewords:70 }}</p>
-    <a href="{{ post.get_absolute_url }}" class="btn btn-primary shadow-sm"
-       style="background-color:#a81113; border:#a81113">Read more</a>
-    <p class="card-text"><small class="text-muted">{{ post.views }} views</small></p>
-  </div>
-  <div class="card-footer text-muted">
-    {{ post.created_at }}
-  </div>
+<div class="container sm-12">
+    <div class="row justify-content-center my-2">
+        <div class="col-md-9 sm-12">
+            {% get_breaking_news %}
+            {% get_last_news %}
+            {% if hype_categories %}
+                {% for item in hype_categories %}
+                    {% if item.items %}
+                        {% for k, v in item.items %}
+                            {% if k %}
+                                <div class="row justify-content-center my-2 g-2 sm-12">
+                                    <a class="text-decoration-none" href="{{ k.get_absolute_url }}">
+                                        <h2 class="mb-0">{{ k.title }}</h2></a>
+                                <div class="row row-cols-auto g-2 mb-3">
+                            {% endif %}
+                                    {% if v %}
+                                        {% if v.count == 1 %}
+                                            {% for post in v %}
+                                                <div class="col-md-12 col-sm-12">
+                                                    <a class="text-decoration-none text-dark" href="{{ post.get_absolute_url }}">
+                                                        <div class="card" style="height:100%">
+                                                            {% if post.image %}
+                                                                <img src="{{ post.image.url }}" class="card-img-1" alt="..." style="">
+                                                            {% endif %}
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{ post.title }}</h5>
+                                                                {% if post.short_description %}
+                                                                    <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        {% elif v.count == 2 %}
+                                            {% for post in v %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <a class="text-decoration-none text-dark" href="{{ post.get_absolute_url }}">
+                                                        <div class="card" style="height:100%">
+                                                            {% if post.image %}
+                                                                <img src="{{ post.image.url }}" class="card-img-2" alt="..." style="">
+                                                            {% endif %}
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{ post.title }}</h5>
+                                                                {% if post.short_description %}
+                                                                    <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        {% elif v.count == 3 %}
+                                            {% for post in v %}
+                                                <div class="col-md-4 col-sm-12">
+                                                    <a class="text-decoration-none text-dark" href="{{ post.get_absolute_url }}">
+                                                        <div class="card" style="height:100%">
+                                                            {% if post.image %}
+                                                                <img src="{{ post.image.url }}" class="card-img-3" alt="..." style="">
+                                                            {% endif %}
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{ post.title }}</h5>
+                                                                {% if post.short_description %}
+                                                                    <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        {% elif v.count == 4 %}
+                                            {% with first_row=v|slice:":3" %}
+                                                {% for post in first_row %}
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <a class="text-decoration-none text-dark"
+                                                           href="{{ post.get_absolute_url }}">
+                                                            <div class="card" style="height:100%">
+                                                                {% if post.image %}
+                                                                    <img src="{{ post.image.url }}"
+                                                                         class="card-img-3" alt="..." style="">
+                                                                {% endif %}
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">{{ post.title }}</h5>
+                                                                    {% if post.short_description %}
+                                                                        <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endwith %}
+                                            {% with last_post=v|slice:"3:" %}
+                                            <div class="col-md-12 col-sm-12">
+                                                        <a class="text-decoration-none text-dark"
+                                                           href="{{ last_post.0.get_absolute_url}}">
+                                                            <div class="card" style="height:100%">
+                                                                {% if last_post.0.image %}
+                                                                    <img src="{{ last_post.0.image.url }}"
+                                                                         class="card-img-1" alt="..." style="">
+                                                                {% endif %}
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">{{ last_post.0.title }}</h5>
+                                                                    {% if last_post.0.short_description %}
+                                                                        <p class="card-text">{{ last_post.0.short_description|safe }}</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                            {% endwith %}
+                                        {% elif v.count == 5 %}
+                                            {% with first_row=v|slice:":3"%}
+                                                {% for post in first_row %}
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <a class="text-decoration-none text-dark"
+                                                           href="{{ post.get_absolute_url }}">
+                                                            <div class="card" style="height:100%">
+                                                                {% if post.image %}
+                                                                    <img src="{{ post.image.url }}"
+                                                                         class="card-img-3" alt="..." style="">
+                                                                {% endif %}
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">{{ post.title }}</h5>
+                                                                    {% if post.short_description %}
+                                                                        <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endwith %}
+                                            {% with last_row=v|slice:"3:" %}
+                                                {% for post in last_row %}
+                                                    <div class="col-md-6 col-sm-12">
+                                                        <a class="text-decoration-none text-dark"
+                                                           href="{{ post.get_absolute_url}}">
+                                                            <div class="card" style="height:100%">
+                                                                {% if post.image %}
+                                                                <img src="{{ post.image.url }}"
+                                                                     class="card-img-2" alt="..." style="">
+                                                                {% endif %}
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">{{ post.title }}</h5>
+                                                                    {% if post.short_description %}
+                                                                        <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endwith %}
+                                        {% else %}
+                                            {% for post in v %}
+                                                <div class="col-md-4 col-sm-12">
+                                                    <a class="text-decoration-none text-dark"
+                                                       href="{{ post.get_absolute_url }}">
+                                                        <div class="card" style="height:100%">
+                                                            {% if post.image %}
+                                                                <img src="{{ post.image.url }}"
+                                                                     class="card-img-3" alt="..." style="">
+                                                            {% endif %}
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{ post.title }}</h5>
+                                                                {% if post.short_description %}
+                                                                    <p class="card-text">{{ post.short_description|safe }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 </div>
-{% endfor %}
 {% endblock %}
-</html>

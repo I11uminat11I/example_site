@@ -15,6 +15,7 @@ audio_type = ['mp3']
 
 class PostAdminForm(forms.ModelForm):
     content = forms.CharField(widget=CKEditorUploadingWidget())
+    short_description = forms.CharField(widget=CKEditorUploadingWidget())
 
     class Meta:
         model = Post
@@ -25,12 +26,13 @@ class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
     prepopulated_fields = {"slug": ("title",)}
     model = Post
-    list_display = ['id', 'title', 'category', 'slug', 'is_visible', 'get_image', 'created_at']
+    list_display = ['id', 'title', 'category', 'slug', 'is_visible', 'get_image', 'created_at', 'is_breaking']
     list_display_links = ['id', 'title']
     readonly_fields = ('views', 'created_at', 'get_image')
     search_fields = ['title']
-    list_filter = ['category', 'tags', 'created_at']
-    fields = ('title', 'category', 'content', 'tags', 'slug', 'views', 'is_visible', 'image', 'get_image', 'file', 'created_at',)
+    list_filter = ['category', 'tags', 'created_at', 'is_breaking']
+    fields = ('title', 'category', 'short_description', 'content', 'tags', 'slug', 'views', 'is_visible', 'image',
+              'get_image', 'file', 'created_at', 'is_breaking')
     list_per_page = 5
     save_on_top = True
 

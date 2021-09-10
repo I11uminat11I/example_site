@@ -2,21 +2,45 @@
 {% block title %}
 {{ title }}{{ block.super }}
 {% endblock %}
+{% comment %}
 {% block content %}
-<div class="card m-3 shadow-sm">
-  <div class="card-header">
+<div class="m-3 shadow-sm">
+  <div class="header">
     category: <a href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
   </div>
-  <div class="card-body">
+  <div class="body">
     <h5 class="card-title">{{ post.title }}</h5>
     {% if post.image %}
     <img src="{{ post.image.url }}" class="card-img-top shadow-sm rounded-3" alt="...">
     {% endif %}
-    <p class="card-text m-2">{{ post.content|safe}}</p>
-    <p class="card-text"><small class="text-muted">{{ post.views }} views</small></p>
+    <p class="text m-2">{{ post.content|safe}}</p>
+    <p class="text"><small class="text-muted">{{ post.views }} views</small></p>
   </div>
-  <div class="card-footer text-muted">
+  <div class="footer text-muted">
     {{ post.created_at }}
+  </div>
+</div>
+{% endblock %}
+{% endcomment %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card p-2 my-5 shadow-sm">
+        <div class="card-body">
+          <h1 class="card-title my-2">{{ post.title }}</h1>
+          <div class="row justify-content-between my-2">
+            <div class="col-6 col-sm-3"><a class="text-start text-decoration-none"
+                                           href="{{ post.category.get_absolute_url }}">{{post.category}}</a></div>
+            <div class="col-6 col-sm-3"><p class="text-end">{{ post.created_at }}</p></div>
+          </div>
+              <p class="card-text p-2">{{ post.content|safe }}</p>
+              <br>
+              <p class="card-text py-2">views: {{ post.views }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

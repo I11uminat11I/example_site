@@ -1,0 +1,97 @@
+<div class="row justify-content-center my-5 g-1 sm-12">
+    <a class="text-decoration-none" href="{% url 'breaking_news' %}"><h2 class="mb-0">Breaking news</h2></a>
+    <div class="row row-cols-auto g-1 mb-3">
+        {% if posts %}
+            {% if posts.count > 2 %}
+                <div class="col-md-7 col-sm-12">
+                    {% with first=posts|slice:":1" %}
+                        <a class="text-decoration-none text-dark" href="{{ first.get_absolute_url }}">
+                            <div class="card" style="height:100%">
+                                {% if first.0.image %}
+                                    <img src="{{ first.0.image.url }}" class="card-img-1" alt="..." style="">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ first.0.title }}</h5>
+                                    {% if first.0.short_description %}
+                                        <p class="card-text">{{ first.0.short_description|safe }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endwith %}
+                </div>
+                {% with rest=posts|slice:"1:" %}
+                    <div class="col-md-5 col-sm-12">
+                        {% if posts.count < 4 %}
+                            {% for post in rest %}
+                                <div class="d-flex col-sm-12" style="height:50%">
+                                    <a class="text-decoration-none text-dark" href="{{ post.get_absolute_url }}">
+                                        <div class="card" style="height:100%">
+                                            {% if post.image %}
+                                                <img src="{{ post.image.url }}" class="card-img-3" alt="..." style="">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ post.title }}</h5>
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% for post in rest %}
+                                <div class="d-flex col-sm-12">
+                                    <a class="text-decoration-none text-dark" href="{{ post.get_absolute_url }}">
+                                        <div class="card">
+                                            {% if post.image %}
+                                                <img src="{{ post.image.url }}" class="card-img-3" alt="..." style="">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ post.title }}</h5>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endwith %}
+            {% elif posts.count == 1 %}
+                <div class="col-md-12 col-sm-12">
+                    <a class="text-decoration-none text-dark" href="{{ posts.0.get_absolute_url }}">
+                        <div class="card" style="height:100%">
+                            {% if posts.0.image %}
+                            <img src="{{ posts.0.image.url }}" class="card-img-1" alt="..." style="object-fit:contain">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ posts.0.title }}</h5>
+                                {% if first.0.short_description %}
+                                    <p class="card-text">{{ first.0.short_description|safe }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% elif posts.count == 2 %}
+                {% for post in posts %}
+                    <div class="col-md-6 col-sm-12">
+                        <a class="text-decoration-none text-dark" href="{{ post.get_absolute_url }}">
+                            <div class="card" style="height:100%">
+                                {% if post.image %}
+                                <img src="{{ post.image.url }}" class="card-img-2" alt="..." style="">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ post.title }}</h5>
+                                    {% if post.short_description %}
+                                        <p class="card-text">{{ post.short_description|safe }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        </a>
+    </div>
+</div>

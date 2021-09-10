@@ -4,25 +4,35 @@
 {% endblock %}
 
 {% block content %}
-{% for post in posts %}
-<div class="card my-4 shadow-sm rounded">
-  <div class="card-header">
-    category: <a href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">{{ post.title }}</h5>
-    {% if post.image %}
-    <img src="{{ post.image.url }}" class="card-img-top rounded-3" alt="..." width="400">
-    {% endif %}
-    <p class="card-text">{{ post.content|safe|truncatewords:70 }}</p>
-    <a href="{{ post.get_absolute_url }}" class="btn btn-primary shadow-sm"
-       style="background-color:#a81113; border:#a81113">Read more</a>
-    <p class="card-text"><small class="text-muted">{{ post.views }} views</small></p>
-  </div>
-  <div class="card-footer text-muted">
-    {{ post.created_at }}
+<div class="container sm-12">
+  <div class="row justify-content-center">
+    {% for post in posts %}
+    <div class="col-md-7 my-4">
+      <div class="card my-2 shadow-sm rounded">
+        <div class="card-header">
+          category: <a class='text-decoration-none' href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
+        </div>
+        <a class='text-decoration-none text-dark' href="{{ post.get_absolute_url }}">
+          <div class="card-body">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" class="card-img-top rounded-3" alt="..." style='max-width:46rem'>
+            {% endif %}
+            <h5 class="card-title mt-3">{{ post.title }}</h5>
+            {% if post.short_description %}
+            <p class="card-text">{{ post.short_description|safe }}</p>
+            {% endif %}
+          </div>
+        </a>
+          <div class="card-footer text-muted">
+            <div class="row">
+              <div class="col-6">{{ post.created_at }}</div>
+              <div class="col-6 text-end">Views: {{ post.views }}</div>
+            </div>
+          </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </div>
-{% endfor %}
 {% endblock %}
 </html>
