@@ -1,47 +1,124 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
 {% block title %}
 {{ title }}{{ block.super }}
 {% endblock %}
-{% comment %}
-{% block content %}
-<div class="m-3 shadow-sm">
-  <div class="header">
-    category: <a href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
-  </div>
-  <div class="body">
-    <h5 class="card-title">{{ post.title }}</h5>
-    {% if post.image %}
-    <img src="{{ post.image.url }}" class="card-img-top shadow-sm rounded-3" alt="...">
-    {% endif %}
-    <p class="text m-2">{{ post.content|safe}}</p>
-    <p class="text"><small class="text-muted">{{ post.views }} views</small></p>
-  </div>
-  <div class="footer text-muted">
-    {{ post.created_at }}
-  </div>
-</div>
-{% endblock %}
-{% endcomment %}
+{% load tags %}
 {% block content %}
 <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
+  <div class="row justify-content-center my-4">
+    <div class="col-xs-12 col-sm-10 col-md-8">
       <div class="card p-2 my-5 shadow-sm">
         <div class="card-body">
-          <h1 class="card-title my-2">{{ post.title }}</h1>
-          <div class="row justify-content-between my-2">
-            <div class="col-6 col-sm-3"><a class="text-start text-decoration-none"
-                                           href="{{ post.category.get_absolute_url }}">{{post.category}}</a></div>
-            <div class="col-6 col-sm-3"><p class="text-end">{{ post.created_at }}</p></div>
+          <h1 class="card-title mb-3">{{ post.title }}</h1>
+          <div class="d-flex justify-content-between mt-4">
+            <a class="text-decoration-none post-category"
+               href="{{ post.category.get_absolute_url }}">{{post.category}}</a>
+            <p>{{ post.created_at }}</p>
           </div>
-              <p class="card-text p-2">{{ post.content|safe }}</p>
-              <br>
-              <p class="card-text py-2">views: {{ post.views }}</p>
+            <p class="card-text px-2">{{ post.content|safe }}</p>
+            <br>
+            <ul class="tag-container">
+                {% for tag in post.tags.all %}
+                <li class="tag-item shadow-sm"><a class="tag-link" href="{{ tag.get_absolute_url }}">{{ tag.title }}</a></li>
+                {% endfor %}
+            </ul>
+            <div class="d-flex align-items-center w-100">
+                <form action="{% url 'like' post.slug %}" class='me-3 d-flex align-items-center' method="POST">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        {% if liked %}
+                            <button class="like" type="submit", name="post_slug",
+                                    value="{{post.slug}}"><img src="{% static 'images/liked.svg' %}" width="24px"></button>
+                        {% else %}
+                            <button class="like" type="submit", name="post_slug",
+                                    value="{{post.slug}}"><img src="{% static 'images/unliked.svg' %}" width="24px"></button>
+                        {% endif %}
+                    {% else %}
+                        <img src="{% static 'images/unliked.svg' %}" width="24px">
+                    {% endif %}
+                    <p class="card-text">{{post.likes.count}} liked</p>
+                </form>
+                <form action="{% url 'dislike' post.slug %}" class='me-3 d-flex align-items-center' method="POST">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        {% if disliked %}
+                            <button class="like" type="submit", name="post_slug",
+                                value="{{post.slug}}"><img src="{% static 'images/disliked.svg'  %}" width="24px"></button>
+                        {% else %}
+                            <button class="like" type="submit", name="post_slug",
+                                value="{{post.slug}}"><img src="{% static 'images/undisliked.svg' %}" width="24px"></button>
+                        {% endif %}
+                    {% else %}
+                        <img src="{% static 'images/undisliked.svg' %}" width="24px">
+                    {% endif %}
+                    <p class="card-text">{{post.dislikes.count}} disliked</p>
+                </form>
+                <p class="card-text py-2"><img class='align-top' src="{% static 'images/eye.png' %}"
+                                               height="24px"> {{ post.views }}</p>
+            </div>
+          <div class="d-flex justify-content-center flex-wrap flex-column">
+            {% if post.comments %}
+              <div class="comment-container">
+              {% for comment in post.comments.all %}
+                  {% if comment.parent %}
+                    <div class="nested-comment">
+                        <div class="comment-author">
+                        {{ comment.author }}
+                        </div>
+                        <div class="comment-date text-muted">
+                            {{ comment.added }}
+                        </div>
+                        <div class="comment-body">
+                            {{ comment.content }}
+                        </div>
+                    </div>
+                  {% else %}
+                      <div class="comment">
+                        <div class="comment-author">
+                            {{ comment.author }}
+                        </div>
+                        <div class="comment-date text-muted">
+                            {{ comment.added }}
+                        </div>
+                        <div class="comment-body">
+                            {{ comment.content }}
+                        </div>
+                      </div>
+                  {% endif %}
+              {% endfor %}
+              </div>
+          {% endif %}
+              <form action="{% url 'add_comment' post.slug %}" method='post' class="add-comment">
+                  {% csrf_token %}
+<!--                  <textarea name="comment" id="content" rows='3' placeholder="add comment"></textarea>
+                  <input type="hidden" id='comment-author' name="author" value={{request.user.profile}}>
+                  <input type="hidden" id='comment-parent' name="parent" value="{{parent}}">
+                  <input type="hidden" id="post-comment" name="post" value="{{post}}">-->
+                  {{ form.author }}
+                  {{ form.post }}
+                  {{ form.parent }}
+                  {{ form.content }}
+                  <button class="btn btn-primary" type="submit" name="post_slug", value="{{post.slug}}"
+                          style="background-color:#0ba23a; border-color:#0ba23a;">send comment</button>
+              </form>
           </div>
         </div>
       </div>
     </div>
+    <aside class="col-xs-12 col-sm-10 col-md-3 my-5" style="">
+        <h2 class="mb-4" style="color:#0ba23a">Related news</h2>
+        {% get_related_post post as rel %}
+        {% for related_post in rel.related_posts %}
+            <div class="card post-card shadow-sm mb-3">
+                <a class="text-decoration-none text-dark" href="{{related_post.get_absolute_url}}">
+                <div class="card-body">
+                    <p class="related-post-title">{{ related_post.title }}</p>
+                </div>
+                </a>
+            </div>
+        {% endfor %}
+    </aside>
   </div>
 </div>
 {% endblock %}
-</html>

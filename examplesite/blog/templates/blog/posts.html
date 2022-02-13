@@ -1,38 +1,35 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 {% block title %}
 {{ title }}{{ block.super }}
 {% endblock %}
 
 {% block content %}
-<div class="container sm-12">
-  <div class="row justify-content-center">
-    {% for post in posts %}
-    <div class="col-md-7 my-4">
-      <div class="card my-2 shadow-sm rounded">
-        <div class="card-header">
-          category: <a class='text-decoration-none' href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
+<div class="row d-flex align-items-center flex-column">
+  {% for post in posts %}
+  <div class="col-md-6 my-4">
+    <div class="card post-card my-2 shadow-sm rounded">
+      <div class="card-header">
+        category: <a class='text-decoration-none' href="{{ post.category.get_absolute_url }}"> {{ post.category }}</a>
+      </div>
+      <a class='text-decoration-none text-dark' href="{{ post.get_absolute_url }}">
+        <div class="card-body">
+          {% if post.image %}
+          <img src="{{ post.image.url }}" class="card-img-1 rounded-3" alt="...">
+          {% endif %}
+          <h5 class="card-title mt-3">{{ post.title }}</h5>
+          {% if post.short_description %}
+          <p class="card-text">{{ post.short_description|safe }}</p>
+          {% endif %}
         </div>
-        <a class='text-decoration-none text-dark' href="{{ post.get_absolute_url }}">
-          <div class="card-body">
-            {% if post.image %}
-            <img src="{{ post.image.url }}" class="card-img-top rounded-3" alt="..." style='max-width:46rem'>
-            {% endif %}
-            <h5 class="card-title mt-3">{{ post.title }}</h5>
-            {% if post.short_description %}
-            <p class="card-text">{{ post.short_description|safe }}</p>
-            {% endif %}
-          </div>
-        </a>
-          <div class="card-footer text-muted">
-            <div class="row">
-              <div class="col-6">{{ post.created_at }}</div>
-              <div class="col-6 text-end">Views: {{ post.views }}</div>
-            </div>
-          </div>
+      </a>
+      <div class="card-footer text-muted">
+        <div class="row">
+          <div class="col-6">{{ post.created_at }}</div>
+          <div class="col-6 text-end">Views: {{ post.views }}</div>
+        </div>
       </div>
     </div>
-    {% endfor %}
   </div>
+  {% endfor %}
 </div>
 {% endblock %}
-</html>

@@ -1,4 +1,4 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 {% block title %}
 {{ title }}login {{ block.super }}
 {% endblock %}
@@ -7,15 +7,36 @@
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-4 col-sm-12">
-            <h1>Login</h1>
+            <h1 class="mb-2">Login</h1>
         </div>
         <div class="row justify-content-center">
             <div class="col-md-4 col-sm-12">
-            <form action="{% url 'login' %}" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-dark btn-block">Submit</button>
-            </form>
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="invalid-feedback">
+                        {{ form.non_field_errors }}
+                    </div>
+                    <div class="col-sm-12">
+                        <p>
+                            <label for="{{form.username.id_for_label}}" class="form-label">Enter your username:</label>
+                                {{ form.username }}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors }}
+                            </div>
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <p>
+                            <label for="{{form.password.id_for_label}}" class="form-label">Enter your password:</label>
+                            {{ form.password }}
+                            <div class="invalid-feedback">
+                                {{ form.password.errors }}
+                            </div>
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-block">Submit</button>
+                    <p style="margin-top: 1rem">Not registered yet? <a href="{% url 'register' %}">Create an account!</a></p>
+                </form>
             </div>
         </div>
     </div>

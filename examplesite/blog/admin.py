@@ -1,12 +1,13 @@
 from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 
 # Register your models here.
 from django.utils.safestring import mark_safe
 from django import forms
 
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment, Profile
 
 image_type = ['jpg', 'png', 'gif']
 video_type = ['mp4', 'webm']
@@ -14,8 +15,13 @@ audio_type = ['mp3']
 
 
 class PostAdminForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     content = forms.CharField(widget=CKEditorUploadingWidget())
-    short_description = forms.CharField(widget=CKEditorUploadingWidget())
+    short_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
+    category = forms.Select(attrs={'class': 'form-select'}),
+    tags = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={'class': 'form-select'})),
+    image = forms.FileInput(attrs={'class': 'form-control', 'type': 'file', 'id': 'formFile'}),
+    is_visible = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
 
     class Meta:
         model = Post
@@ -31,8 +37,8 @@ class PostAdmin(admin.ModelAdmin):
     readonly_fields = ('views', 'created_at', 'get_image')
     search_fields = ['title']
     list_filter = ['category', 'tags', 'created_at', 'is_breaking']
-    fields = ('title', 'category', 'short_description', 'content', 'tags', 'slug', 'views', 'is_visible', 'image',
-              'get_image', 'file', 'created_at', 'is_breaking')
+    fields = ('title', 'category', 'short_description', 'content', 'tags', 'slug', 'likes', 'dislikes', 'views', 'is_visible', 'image',
+              'get_image', 'created_at', 'is_breaking')
     list_per_page = 5
     save_on_top = True
 
@@ -66,3 +72,8 @@ class TagAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(Comment, MPTTModelAdmin)
+admin.site.register(Profile)
+
+admin.site.site_header = 'The Green Elephant News'
+admin.site.site_title = 'The Green Elephant News'

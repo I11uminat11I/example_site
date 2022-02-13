@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<div class="col-sm-12 my-5" style="min-height: 500px">
+    <div class="profile-container sm-12 my-5 justify-content-center">
+        <form method="POST" action="" enctype="multipart/form-data" style="min-width: 40%">
+            {% csrf_token %}
+            <div class="invalid-feedback">
+                {{ form.non_field_errors }}
+            </div>
+            <div class="col-sm-12">
+                {{ form.created_at }}
+                <p>
+                    {% if form.avatar %}
+                    <label for="{{form.avatar.id_for_label}}" class="form-label"></label>
+                    <img class="avatar mb-3" src="{{ user.profile.avatar.url }}"> {{ form.avatar }}
+                    {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" fill="white"
+                        class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>{{ form.avatar }}
+                    {% endif %}
+                    <div class="invalid-feedback">
+                        {{ form.avatar.errors }}
+                    </div>
+                </p>
+            </div>
+            <div class="col-sm-12">
+                <p>
+                    <label for="{{form.nickname.id_for_label}}" class="form-label">Enter your nickname:</label>
+                    {{ form.nickname }}
+                    <div class="invalid-feedback">
+                        {{ form.nickname.errors }}
+                    </div>
+                </p>
+            </div>
+            <div class="col-sm-12">
+                <p>
+                    <label for="{{form.email.id_for_label}}" class="form-label">Enter your email:</label>
+                    {{ form.email }}
+                    <div class="invalid-feedback">
+                        {{ form.email.errors }}
+                    </div>
+                </p>
+            </div>
+            <div class="col-sm-12">
+                <p>
+                    <label for="{{form.phoneNumber.id_for_label}}" class="form-label">Enter your number:</label>
+                    {{ form.phoneNumber }}
+                    <div class="invalid-feedback">
+                        {{ form.phoneNumber.errors }}
+                    </div>
+                </p>
+            </div>
+            <div class="col-sm-12">
+                <p>joined: {{ request.user.profile.created_at|date:'d M Y' }}
+                </p>
+            </div>
+            <input class="btn btn-primary" type="submit">
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,14 +1,63 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 {% block title %}
 {{ title }}register at {{ block.super }}
 {% endblock %}
 {% block content %}
-<h1>Register</h1>
 
-<form action="{% url 'register' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary btn-block">Submit</button>
-</form>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4 col-sm-12">
+            <h1 class="mb-3">Register</h1>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-4 col-sm-12">
+                <form action="{% url 'register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="invalid-feedback">
+                        {{ form.non_field_errors }}
+                    </div>
+                    <div class="col-sm-12">
+                        <p>
+                            <label for="{{form.username.id_for_label}}" class="form-label">Enter your username:</label>
+                                {{ form.username }}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors }}
+                            </div>
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <p>
+                            <label for="{{form.email.id_for_label}}" class="form-label">Enter your email:</label>
+                                {{ form.email }}
+                            <div class="invalid-feedback">
+                                {{ form.email.errors }}
+                            </div>
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <p>
+                            <label for="{{form.password1.id_for_label}}" class="form-label">Enter your password:</label>
+                                {{ form.password1 }}
+                            <div class="invalid-feedback">
+                                {{ form.password1.errors }}
+                            </div>
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <p>
+                            <label for="{{form.password2.id_for_label}}" class="form-label">Confirm your password:</label>
+                                {{ form.password2 }}
+                            <div class="invalid-feedback">
+                                {{ form.password2.errors }}
+                            </div>
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-block mt-1">Submit</button>
+                    <p style="margin-top: 1rem">Already have an account? <a href="{% url 'login' %}">Login here!</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

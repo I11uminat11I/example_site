@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{% static 'images/elephgreen.png' %}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'styles/style.css' %}" rel="stylesheet">
+    <title>{% block title %}The Green Elephant News{% endblock %}</title>
+</head>
+<body>
+{% include 'inc/nav.html' %}
+<div class="container-sm" id="page">
+    <div class="row justify-content-center my-1">
+        {% block content %}content{% endblock %}
+    </div>
+</div>
+
+{% include 'inc/footer.html' %}
+
+<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
+<script>var largeDisplay = window.matchMedia("(min-width: 768px)").matches;
+        var smallDisplay = window.matchMedia("(max-width: 1024px)").matches;
+
+        var viewport = window.innerWidth;
+        var logo = document.getElementsByClassName('logo-panel')[0];
+        var widthLogo = logo.offsetWidth;
+        var startPos = viewport/2 - widthLogo/2;
+
+        if (viewport < 500){
+            userBtn = document.getElementById('user-dropdown').children;
+            for (let i = 1; i < userBtn.length; i++){
+                elem = userBtn[i];
+                elem.parentNode.removeChild(elem);
+            };
+            button = document.getElementsByClassName('navbar-toggler')[0];
+            userPanel = document.getElementsByClassName('avatar-link')[0];
+            userPanel.style.position = 'absolute';
+            userPanel.style.right = '10px';
+            userPanel.style.top = '9px';
+            sizeUserPanel = userPanel.getBoundingClientRect();
+            widthUserPanel = sizeUserPanel.width;
+            offsetUserPanel = viewport - widthUserPanel;
+            sizeBtn = button.getBoundingClientRect();
+            offsetBtn = sizeBtn.right;
+            if ((startPos < offsetBtn) || (sizeUserPanel.left < (offsetBtn + widthLogo))){
+                logo.firstElementChild.style.padding = '8px 8px';
+                logo.style.maxWidth = viewport - offsetBtn - widthUserPanel + 'px';
+                logo.style.left = offsetBtn + 'px';
+                icon = document.getElementsByClassName('align-center')[0];
+                iconMarginClass = icon.classList[1];
+                if (iconMarginClass == 'me-1'){
+                    icon.classList.remove(iconMarginClass);
+                } else {
+                    icon.classList.add('me-1');
+                }
+            } else {
+                logo.style.left = startPos + 'px';
+            }
+        } else {
+            logo.style.left = startPos + 'px';
+        }
+
+
+        function moveForm(){
+            var navRightItems = document.getElementById('nav-right-items');
+            var navClasses = navRightItems.classList;
+            for(var i = 0; i < navClasses.length; i++){
+                if(navClasses[i] != 'd-flex'){
+                    navRightItems.classList.remove(navClasses[i]);
+                }
+            }
+        };
+
+
+        if (!(largeDisplay)) {
+            moveForm();
+            var images = document.querySelectorAll('card-img-1, .card-img-2, .card-img-3')
+            if (images){
+                for (let i = 0; i < images.length; i++){
+                    images[i].classList.remove(images[i].classList[0]);
+                }
+            }
+        }
+
+        const nav = document.getElementsByClassName('navbar-nav me-2')[0];
+        const navContainer = document.getElementsByClassName('container-fluid')[0];
+
+        var categoryList = document.getElementById('category-panel');
+        var categoryBtn = document.getElementById('category');
+        categoryBtn.addEventListener('click', function(){
+            posY = getComputedStyle(categoryList).top;
+            if (posY != '-500px'){
+                categoryList.style.top = '-500px';
+                categoryList.style.maxHeight = '0px';
+
+            } else {
+                var navbarHeight = document.getElementById('navbar').offsetHeight;
+                categoryList.style.top = navbarHeight + 'px';
+                categoryList.style.maxHeight = '100%';
+            }
+        });
+</script>
+</body>
+</html>
